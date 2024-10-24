@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MsuSocialMedia</title>
+</head>
+<body>
+<table>
+    <tr>
+        <th>Friend List</th>
+    </tr>
+    <tr th:each="friend : ${friendList}">
+        <td>
+            <a th:href="@{/api/v1/social_media/userProfile/{id}(id=${friend.id})}" th:text="${friend.firstName} + ' ' + ${friend.lastName}"></a>
+        </td>
+    </tr>
+</table>
+<br><br>
+<a th:href="@{/api/v1/social_media/userProfile/{id}(id = ${userId})}"> Back </a><br>
+<a href="/api/v1/social_media/allUsers"> All user info </a>
+
+</body>
+</html>

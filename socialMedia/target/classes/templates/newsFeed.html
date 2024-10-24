@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MsuSocialMedia</title>
+</head>
+<body>
+
+<h2 th:if ="${postList.size() != 0}">FEED</h2>
+<h2 th:if = "${postList.size() == 0}"> NO FEED FOUND WITH YOUR PREFERENCES</h2>
+<table th:if ="${postList.size() != 0}">
+    <tr>
+        <th>AUTHOR</th>
+        <th>DATE</th>
+        <th>CATEGORY</th>
+        <th>DESCRIPTION</th>
+        <th>LIKES</th>
+        <th>DISLIKES</th>
+        <th>REPOSTS</th>
+        <th>COMMENT_CNT</th>
+        <th>IMAGES</th>
+    </tr>
+    <tr th:each="post : ${postList}">
+        <td>
+            <a th:href="@{/api/v1/social_media/userProfile/{userId}(userId = ${postAuthorsMap.get(post.getId()).getId()})}" th:text = "${postAuthorsMap.get(post.getId()).getFirstName()} + ' ' + ${postAuthorsMap.get(post.getId()).getLastName()}"></a>
+        </td>
+        <td th:text ="${post.getCrDate()}"></td>
+        <td th:text ="${post.getCategory()}"></td>
+        <td th:text ="${post.getDescrip()}"></td>
+        <td th:text ="${post.getLikeCnt()}"></td>
+        <td th:text ="${post.getDislikeCnt()}"></td>
+        <td th:text ="${post.getRepostCnt()}"></td>
+        <td th:text ="${post.getComCnt()}"></td>
+        <td>
+            <table>
+                <tr>
+                    <th>IMAGE</th>
+                </tr>
+                <tr th:each = "imageId : ${postImagesIdList.get(post.getId())}">
+                    <td>
+                        <img th:src="@{/postImages/{id}(id = ${imageId})}" alt="1" height = "50px"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td>
+            <a th:href="@{/api/v1/social_media/userProfile/{userId}/postComments/{postId}(userId = ${post.getAuthorId()}, postId = ${post.getId()})}"> Watch comments </a>
+        </td>
+    </tr>
+</table>
+
+
+<a href="/api/v1/social_media/allUsers"> All user info </a>
+</body>
+</html>

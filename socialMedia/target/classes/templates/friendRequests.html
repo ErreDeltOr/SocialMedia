@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MsuSocialMedia</title>
+</head>
+<body>
+<table>
+    <tr>
+        <th> Your current friend Requests </th>
+    </tr>
+    <tr th:each="friendRequest : ${friendRequestList}">
+        <td>
+            <a th:href="@{/api/v1/social_media/userProfile/{id}(id=${friendRequest.getId()})}" th:text="${friendRequest.getFirstName()} + ' ' + ${friendRequest.getLastName()}"></a>
+        </td>
+        <td>
+            <form name="deleteFriendRequest" th:action = "@{/api/v1/social_media/userProfile/friendRequests/deleteFriendRequest}" method="post">
+                <p>
+                    <label>
+                        <input name="userId" type="hidden" th:value="${friendRequest.getId()}">
+                    </label>
+                    <input type="submit" name=submit value="Decline request">
+                </p>
+            </form>
+        </td>
+        <td>
+            <form name="acceptFriendRequest" th:action = "@{/api/v1/social_media/userProfile/friendRequests/acceptFriendRequest}" method="post">
+                <p>
+                    <label>
+                        <input name="userId" type="hidden" th:value="${friendRequest.getId()}">
+                    </label>
+                    <input type="submit" name=submit value="Accept request">
+                </p>
+            </form>
+        </td>
+    </tr>
+</table>
+<br><br>
+<a th:href="@{/api/v1/social_media/userProfile/{id}(id = ${userId})}"> Back </a><br>
+<a href="/api/v1/social_media/allUsers"> All user info </a>
+
+</body>
+</html>

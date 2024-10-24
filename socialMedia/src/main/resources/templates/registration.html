@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MsuSocialMedia</title>
+</head>
+<body>
+<h4>Registration</h4>
+
+<form th:action = "@{/registration}" method = "post" th:object = "${user}">
+    <p>
+        Email <label>
+            <input type="text" name = "Email" th:field = "*{email}">
+        </label><br>
+        Password <label>
+            <input type="text" name = "Password" th:field = "*{password}">
+        </label><br>
+        Firstname <label>
+            <input type="text" name = "First name" th:field = "*{firstName}">
+        </label><br>
+        Lastname <label>
+            <input type="text" name = "Last name" th:field = "*{lastName}">
+        </label><br>
+        Age <label>
+            <input type="number" name = "Age" th:field = "*{age}">
+        </label><br>
+        <input type="submit" name=submit value="Sign Up">
+    </p>
+</form><br><br>
+
+<a href="/login"> Log In </a>
+
+</body>
+</html>

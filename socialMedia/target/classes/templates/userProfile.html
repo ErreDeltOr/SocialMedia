@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MsuSocialMedia</title>
+</head>
+<body>
+<form th:if="${(userImagesIdList.size() == 0) && (user.getId() == authId)}" th:action = "@{/api/v1/social_media/userProfile/addProfilePhoto}" method="post" enctype="multipart/form-data">
+    <p>
+        <label>
+            <input name="userId" type="hidden" th:value="${user.getId()}">
+        </label>
+        <label>
+            <input type="file" name="profilePhoto">
+        </label>
+        <input type="submit" name=submit value="Add profile photo">
+    </p>
+</form>
+<img th:if="${userImagesIdList.size() != 0}" th:src="@{/userImages/{id}(id = ${userImagesIdList.get(0)})}" alt="1" height = "200px"/>
+<form th:if="${(userImagesIdList.size() != 0) && (user.getId() == authId)}" th:action = "@{/api/v1/social_media/userProfile/changeProfilePhoto}" method="post" enctype="multipart/form-data">
+    <p>
+        <label>
+            <input name="userId" type="hidden" th:value="${user.getId()}">
+        </label>
+        <label>
+            <input type="file" name="profilePhoto">
+        </label>
+        <input type="submit" name=submit value="Change profile photo">
+    </p>
+</form>
+<table th:if ="${user.getId() != authId}">
+    <tr>
+        <th>
+            <form th:if="${isFollowerMe}" th:action="@{/api/v1/social_media/userProfile/deleteFriend}" method="post">
+                <p>
+                    <label>
+                        <input name="userId" type="hidden" th:value="${user.getId()}">
+                    </label>
+                    <input th:if="${isFollowerOther}" type="submit" name=submit value="Delete from friends">
+                    <input th:if="${!isFollowerOther}" type="submit" name=submit value="Unfollow">
+                </p>
+            </form>
+        </th>
+        <th>
+            <form th:if="${!isFollowerMe}" th:action="@{/api/v1/social_media/userProfile/addFriend}" method="post">
+                <p>
+                    <label>
+                        <input name="userId" type="hidden" th:value="${user.getId()}">
+                    </label>
+                    <input th:if="${isFollowerOther}" type="submit" name=submit value="Accept friend request">
+                    <input th:if="${!isFollowerOther}" type="submit" name=submit value="Send friend request">
+                </p>
+            </form>
+        </th>
+    </tr>
+</table>
+
+<br><br>
+<p th:text="'FirstName: ' + ${user.getFirstName()}"></p>
+<p th:text="'LastName: ' + ${user.getLastName()}"></p>
+<p th:text="'Age: ' + ${user.getAge()}"></p>
+<p th:text="'Friend count: ' + ${friendList.size()}"></p>
+<p th:text="'Follower count: ' + ${followerList.size()}"></p>
+<p th:if = "${user.getId() == authId}" th:text="'Current friend request count: ' + ${friendRequestList.size()}"></p>
+<a th:href="@{/api/v1/social_media/userProfile/friends/{id}(id=${user.id})}" th:text="'Friend List'"></a>
+<a th:href="@{/api/v1/social_media/userProfile/followers/{id}(id=${user.id})}" th:text="'Follower List'"></a>
+<a th:if = "${user.getId() == authId}" th:href="@{/api/v1/social_media/userProfile/friendRequests/{id}(id=${user.id})}" th:text="'Current friend requests'"></a>
+
+<form th:if="${user.getId() == authId}" name = "addPost" th:action="@{/api/v1/social_media/userProfile/addPost}" method = "post" enctype="multipart/form-data">
+    <p>
+        <label>
+            <input name="id" type="hidden" th:value="${user.getId()}">
+        </label>
+        POST TEXT <label>
+            <input type="text" name="descrip" size="20" value="">
+        </label><br>
+        CATEGORY <label>
+            <input type="text" name="category" size="20" value="">
+        </label><br>
+        IMAGES <label>
+            <input type="file" name="imageFiles" multiple>
+        </label>
+        <input type="submit" name=submit value="add post">
+    </p>
+</form>
+
+<h2>POSTS</h2>
+
+<table th:if ="${postList.size() != 0}">
+    <tr>
+        <th>DATE</th>
+        <th>CATEGORY</th>
+        <th>DESCRIPTION</th>
+        <th>LIKES</th>
+        <th>DISLIKES</th>
+        <th>REPOSTS</th>
+        <th>COMMENT_CNT</th>
+        <th>IMAGES</th>
+    </tr>
+    <tr th:each="post : ${postList}">
+        <td th:text ="${post.getCrDate()}"></td>
+        <td th:text ="${post.getCategory()}"></td>
+        <td th:text ="${post.getDescrip()}"></td>
+        <td th:text ="${post.getLikeCnt()}"></td>
+        <td th:text ="${post.getDislikeCnt()}"></td>
+        <td th:text ="${post.getRepostCnt()}"></td>
+        <td th:text ="${post.getComCnt()}"></td>
+        <td>
+            <table>
+                <tr>
+                    <th>IMAGE</th>
+                </tr>
+                <tr th:each = "imageId : ${postImagesIdList.get(post.getId())}">
+                    <td>
+                        <img th:src="@{/postImages/{id}(id = ${imageId})}" alt="1" height = "50px"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td>
+            <form name="likePost" th:action = "@{/api/v1/social_media/userProfile/likePost}" method="post">
+                <p>
+                    <label>
+                        <input name="authorId" type="hidden" th:value="${user.getId()}">
+                    </label>
+                    <label>
+                        <input name="postId" type="hidden" th:value="${post.getId()}">
+                    </label>
+                    <input type="submit" name=submit value="like this post">
+                </p>
+            </form>
+        </td>
+        <td>
+            <form name="dislikePost" th:action = "@{/api/v1/social_media/userProfile/dislikePost}" method="post">
+                <p>
+                    <label>
+                        <input name="authorId" type="hidden" th:value="${user.getId()}">
+                    </label>
+                    <label>
+                        <input name="postId" type="hidden" th:value="${post.getId()}">
+                    </label>
+                    <input type="submit" name=submit value="dislike this post">
+                </p>
+            </form>
+        </td>
+        <td>
+            <a th:href="@{/api/v1/social_media/userProfile/{userId}/postComments/{postId}(userId = ${post.getAuthorId()}, postId = ${post.getId()})}"> Watch comments </a>
+        </td>
+        <td>
+            <form th:if = "${authId == user.getId()}" name="deletePost" th:action = "@{/api/v1/social_media/userProfile/deletePost}" method="post">
+                <p>
+                    <label>
+                        <input name="authorId" type="hidden" th:value="${user.getId()}">
+                    </label>
+                    <label>
+                        <input name="postId" type="hidden" th:value="${post.getId()}">
+                    </label>
+                    <input type="submit" name=submit value="delete this post">
+                </p>
+            </form>
+        </td>
+    </tr>
+</table>
+
+
+<a href="/api/v1/social_media/allUsers"> All user info </a>
+</body>
+</html>

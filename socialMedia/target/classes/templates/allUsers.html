@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MsuSocialMedia</title>
+</head>
+<body>
+
+<a th:href="@{/api/v1/social_media/userProfile/{id}(id=${authId})}" th:text="'MY PAGE'"></a>
+<br><br>
+<table>
+    <tr>
+        <th>ALL USERS</th>
+    </tr>
+    <tr th:each="user : ${userList}">
+        <td>
+            <a th:href="@{/api/v1/social_media/userProfile/{id}(id=${user.id})}" th:text="${user.firstName}"></a>
+        </td>
+    </tr>
+</table>
+
+<form name="newsFeedWithFilters" th:action = "@{/api/v1/social_media/feed}" method="get">
+    <p>
+        Friends <label>
+            <input name="isFriends" type="checkbox">
+        </label><br>
+        Subscriptions <label>
+            <input name="isSubscriptions" type="checkbox">
+        </label><br>
+        All categories <label>
+            <input name="noCategory" type="checkbox">
+        </label><br>
+        <label>
+            <input name="category" type="text" value="">
+        </label><br>
+        <input type="submit" name=submit value="Get News Feed">
+    </p>
+</form>
+
+<br><br><br><br>
+<a href="/logout"> Log Out </a>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MsuSocialMedia</title>
+</head>
+<body>
+<h2>POST</h2>
+
+<table>
+    <tr>
+        <th>DATE</th>
+        <th>CATEGORY</th>
+        <th>DESCRIPTION</th>
+        <th>LIKES</th>
+        <th>DISLIKES</th>
+        <th>REPOSTS</th>
+        <th>COMMENT_CNT</th>
+        <th>IMAGES</th>
+    </tr>
+    <tr>
+        <td th:text ="${post.getCrDate()}"></td>
+        <td th:text ="${post.getCategory()}"></td>
+        <td th:text ="${post.getDescrip()}"></td>
+        <td th:text ="${post.getLikeCnt()}"></td>
+        <td th:text ="${post.getDislikeCnt()}"></td>
+        <td th:text ="${post.getRepostCnt()}"></td>
+        <td th:text ="${post.getComCnt()}"></td>
+        <td>
+            <table>
+                <tr>
+                    <th>IMAGE</th>
+                </tr>
+                <tr th:each = "imageId : ${postImagesId}">
+                    <td>
+                        <img th:src="@{/postImages/{id}(id = ${imageId})}" alt="1" height = "50px"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+</table>
+
+<br>
+
+<form name="addComment" th:action = "@{/api/v1/social_media/userProfile/postComments/addComment}" method="post">
+    <p>
+        <label>
+            <input name="postId" type="hidden" th:value="${post.getId()}">
+        </label>
+        COMMENT TEXT <label>
+            <input name="postAuthorId" type="hidden" th:value="${post.getAuthorId()}">
+        </label>
+        <label>
+            <input name="text" type="text" size="20" value="">
+        </label><br>
+        <input type="submit" name=submit value="Add comment">
+    </p>
+</form>
+<br>
+
+<h2>COMMENTS</h2>
+
+<table th:if ="${commentList.size() != 0}">
+    <tr>
+        <th>DATE</th>
+        <th>AUTHOR</th>
+        <th>TEXT</th>
+    </tr>
+    <tr th:each="comment : ${commentList}">
+        <td th:text = "${comment.getCrDate()}"></td>
+        <td>
+            <a th:href="@{/api/v1/social_media/userProfile/{id}(id = ${comment.getAuthorId()})}" th:text = "${(commentAuthorsMap.get(comment.getAuthorId())).getFirstName()} + ' ' + ${(commentAuthorsMap.get(comment.getAuthorId())).getLastName()}"></a>
+        </td>
+        <td th:text ="${comment.getText()}"></td>
+        <td>
+            <form th:if = "${(comment.getAuthorId() == authId) || (post.getAuthorId() == authId)}" name="deleteComment" th:action = "@{/api/v1/social_media/userProfile/postComments/deleteComment}" method="post">
+                <p>
+                    <label>
+                        <input name="commentId" type="hidden" th:value="${comment.getId()}">
+                    </label>
+                    <label>
+                        <input name="postAuthorId" type="hidden" th:value="${post.getAuthorId()}">
+                    </label>
+                    <label>
+                        <input name="postId" type="hidden" th:value="${post.getId()}">
+                    </label>
+                    <input type="submit" name=submit value="Delete comment">
+                </p>
+            </form>
+        </td>
+
+    </tr>
+
+</table>
+
+
+<a href="/api/v1/social_media/allUsers"> All user info </a>
+</body>
+</html>

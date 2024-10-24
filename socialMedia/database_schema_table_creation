@@ -1,0 +1,151 @@
+--------users---------
+create table users
+(
+    id         bigint unsigned auto_increment
+        primary key,
+    email      varchar(255) null,
+    password   varchar(255) null,
+    first_name varchar(255) not null,
+    last_name  varchar(255) not null,
+    age        int          null,
+    active     tinyint      null,
+    constraint id
+        unique (id)
+);
+----------------------
+
+--------posts---------
+create table posts
+(
+    id          bigint unsigned auto_increment
+        primary key,
+    author_id   bigint unsigned not null,
+    descrip     mediumtext      null,
+    like_cnt    int             not null,
+    dislike_cnt int             not null,
+    repost_cnt  int             not null,
+    com_cnt     int             not null,
+    cr_date     timestamp       not null,
+    category    varchar(255)    null,
+    constraint id
+        unique (id),
+    constraint posts_ibfk_1
+        foreign key (author_id) references users (id)
+);
+----------------------
+
+--------blacklist---------
+create table blacklist
+(
+    id       bigint unsigned auto_increment
+        primary key,
+    user1_id bigint unsigned not null,
+    user2_id bigint unsigned not null,
+    constraint id
+        unique (id),
+    constraint blacklist_ibfk_1
+        foreign key (user1_id) references users (id),
+    constraint blacklist_ibfk_2
+        foreign key (user2_id) references users (id)
+);
+
+create index user1_id
+    on blacklist (user1_id);
+
+create index user2_id
+    on blacklist (user2_id);
+----------------------
+
+---------photo_to_users-------------
+create table photo_to_users
+(
+    id               bigint unsigned auto_increment
+        primary key,
+    user_id          bigint unsigned not null,
+    user_photo       mediumblob      not null,
+    is_profile_image tinyint         not null,
+    constraint id
+        unique (id),
+    constraint photo_to_users_ibfk_1
+        foreign key (user_id) references users (id)
+);
+
+create index user_id
+    on photo_to_users (user_id)
+----------------------
+
+----------friends------------
+create table friends
+(
+    id          bigint unsigned auto_increment
+        primary key,
+    user1_id    bigint unsigned not null,
+    user2_id    bigint unsigned not null,
+    is_declined tinyint         null,
+    constraint id
+        unique (id),
+    constraint friends_ibfk_1
+        foreign key (user1_id) references users (id),
+    constraint friends_ibfk_2
+        foreign key (user2_id) references users (id)
+);
+
+create index user1_id
+    on friends (user1_id);
+
+create index user2_id
+    on friends (user2_id);
+----------------------
+
+-----------role_to_users-----------
+
+create table roles_to_users
+(
+    id      bigint unsigned auto_increment
+        primary key,
+    user_id bigint unsigned null,
+    role    varchar(255)    null,
+    constraint id
+        unique (id),
+    constraint roles_to_users_ibfk_1
+        foreign key (user_id) references users (id)
+);
+
+create index user_id
+    on roles_to_users (user_id);
+----------------------
+
+----------comments------------
+create table comments
+(
+    id            bigint unsigned auto_increment
+        primary key,
+    post_id       bigint unsigned not null,
+    com_author_id bigint unsigned not null,
+    com_text      mediumtext      not null,
+    cr_date       timestamp       not null,
+    constraint id
+        unique (id),
+    constraint comments_ibfk_1
+        foreign key (post_id) references posts (id)
+            on delete cascade,
+    constraint comments_ibfk_2
+        foreign key (com_author_id) references users (id)
+);
+--------------------------
+
+----------photo_to_posts------------
+create table photo_to_posts
+(
+    id               bigint unsigned auto_increment
+        primary key,
+    post_id          bigint unsigned not null,
+    post_photo       mediumblob      not null,
+    is_preview_image tinyint         not null,
+    constraint id
+        unique (id),
+    constraint photo_to_posts_ibfk_1
+        foreign key (post_id) references posts (id)
+            on delete cascade
+)
+------------------------------

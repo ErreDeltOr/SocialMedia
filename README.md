@@ -1,2 +1,2 @@
 # SocialMedia
-SocialMedia with posts, comments, friends, followers, news feed
+SocialMedia Application WebSite with posts, comments, friends, followers, news feed
